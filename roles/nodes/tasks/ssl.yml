@@ -73,8 +73,7 @@
 - name: Remove old crontab line for acme
   lineinfile:
     path: /var/spool/cron/crontabs/zend
-    regexp: '^{\d+}'
-    line: '\1 0 * * * sudo "/home/zend/.acme.sh"/acme.sh --cron --home "/home/zend/.acme.sh" > /dev/null'
+    regexp: '^[0-6]+\ 0\ \*\ \*\ \*\ sudo\ \"\/home\/zend\/\.acme\.sh\"\/acme\.sh\ \-\-cron\ \-\-home\ "\/home\/zend\/\.acme\.sh"\ \>\ \/dev\/null' 
     state: absent
 
 - name: Add sudo to crontab for acme
