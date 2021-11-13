@@ -52,7 +52,7 @@
     container_log: true
     template: ubuntu
     state: started
-    template_options: --release xenial
+    template_options: --release focal
     container_command: |
       cat <<EOF > /etc/network/interfaces
       auto lo
