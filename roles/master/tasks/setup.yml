@@ -31,7 +31,7 @@
   - { name: net.ipv6.conf.all.forwarding, value: 1 }
   - { name: net.ipv6.conf.default.forwarding, value: 1 }
   - { name: net.ipv6.conf.default.proxy_ndp, value: 1 }
-  - { name: "net.ipv6.conf.{{ipv6_interface}}.accept_ra", value: 2 }
+  #  - { name: "net.ipv6.conf.{{ipv6_interface}}.accept_ra", value: 2 }
   - { name: fs.inotify.max_queued_events, value: 1048576 }
   - { name: fs.inotify.max_user_instances, value: 1048576 }
   - { name: fs.inotify.max_user_watches, value: 1048576 }
