@@ -52,6 +52,10 @@
   ###
   ### 
   ### letsencrypt CA (best, use this one)
+  environment:
+    NAMECHEAP_API_KEY: "{{namecheap_apikey}}"
+    NAMECHEAP_USERNAME: "{{namecheap_username}}"
+    NAMECHEAP_SOURCEIP: "{{namecheap_sourceip}}"
   shell: "/home/zend/.acme.sh/acme.sh --server letsencrypt --issue --dns dns_namecheap -d {{ container_fqdn }} --renew-hook 'sudo /home/zend/.acme.sh/renew_hook.sh'"
   ###
   ### zerossl CA (acme default, works but is flaky)
