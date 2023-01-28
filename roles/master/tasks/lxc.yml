@@ -84,6 +84,10 @@
       apt install -y iputils-ping dnsutils vim
       mkdir /root/.ssh
       echo '{{ssh_public_key}}' > /root/.ssh/authorized_keys
+      {% if http_proxy is defined %}
+      echo 'export http_proxy={{http_proxy}}' > /root/.bash_profile
+      echo 'export https_proxy={{http_proxy}}' > /root/.bash_profile
+      {% endif %}
   loop: "{{containers_configured.results}}"
   when: item.stat.exists == False
 

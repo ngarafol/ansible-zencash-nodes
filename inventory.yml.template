@@ -10,6 +10,8 @@ all:
     global_tracker_email: your_email@gmail.com
     global_domain: your-nodes-address.com
     swap_size_gb: 60
+    # if your dns registrar needs static ip for api and you only got dyndns, proxy is your friend :)
+    http_proxy: "my_proxy_here"
     ###################################################################
     # caution: do not push these into public repos!
     aws_access_key: "YOUR_AWS_ACCESS_KEY"
