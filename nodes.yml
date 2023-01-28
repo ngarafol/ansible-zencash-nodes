@@ -3,7 +3,7 @@
   tags: master
   roles:
   - master
-- hosts: securenodes,supernodes
+- hosts: securenodes
   tags: nodes
   roles:
   - nodes

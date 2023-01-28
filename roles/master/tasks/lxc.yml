@@ -50,6 +50,7 @@
   lxc_container:
     name: "{{hostvars[item.item].ansible_fqdn}}"
     container_log: true
+    container_log_level: debug
     template: debian
     state: started
     template_options: --release bullseye

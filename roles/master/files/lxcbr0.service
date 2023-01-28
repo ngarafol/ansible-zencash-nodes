@@ -1,6 +1,6 @@
 [Unit]
 Description=Add
-After=network.target
+After=network.target lxc-net.service
 
 [Service]
 Type=oneshot
