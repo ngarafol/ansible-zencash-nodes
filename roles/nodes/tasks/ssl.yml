@@ -56,7 +56,8 @@
     NAMECHEAP_API_KEY: "{{namecheap_apikey}}"
     NAMECHEAP_USERNAME: "{{namecheap_username}}"
     NAMECHEAP_SOURCEIP: "{{namecheap_sourceip}}"
-  shell: "/home/zend/.acme.sh/acme.sh --server letsencrypt --issue --dns dns_namecheap -d {{ container_fqdn }} --renew-hook 'sudo /home/zend/.acme.sh/renew_hook.sh'"
+    HTTPS_PROXY: "{{http_proxy}}"
+  shell: "HTTPS_PROXY={{http_proxy}} /home/zend/.acme.sh/acme.sh --server letsencrypt --issue --dns dns_namecheap -d {{ container_fqdn }} --renew-hook 'sudo /home/zend/.acme.sh/renew_hook.sh'"
   ###
   ### zerossl CA (acme default, works but is flaky)
   #shell: "/home/zend/.acme.sh/acme.sh --issue --dns dns_namecheap -d {{ container_fqdn }} --renew-hook 'sudo /home/zend/.acme.sh/renew_hook.sh'"
@@ -64,12 +65,12 @@
   when: certificate_exists.stat.exists == False
 
 - name: Parse intermediate cert from fullchain
-  shell: cat /home/zend/.acme.sh/{{container_fqdn}}/fullchain.cer | awk 'split_after==1{n++;split_after=0} /-----END CERTIFICATE-----/ {split_after=1} {print > "/usr/local/share/ca-certificates/le-intermediate-cert" n ".crt"}'
+  shell: cat /home/zend/.acme.sh/{{container_fqdn}}_ecc/fullchain.cer | awk 'split_after==1{n++;split_after=0} /-----END CERTIFICATE-----/ {split_after=1} {print > "/usr/local/share/ca-certificates/le-intermediate-cert" n ".crt"}'
   register: intermediate_cert_parsed
 
 - name: Copy ca.crt
   copy:
-    src: /home/zend/.acme.sh/{{container_fqdn}}/ca.cer
+    src: /home/zend/.acme.sh/{{container_fqdn}}_ecc/ca.cer
     dest: /usr/local/share/ca-certificates/acme_ca.cer
     remote_src: yes
   register: ca_cert
@@ -94,8 +95,10 @@
     mode: 0750
   
 - name: Add cert renewal to crontab for zend user
+  environment:
+    HTTPS_PROXY: "{{http_proxy}}"
   lineinfile:
     path: /var/spool/cron/crontabs/zend
-    line: '{{ 60 | random(seed=container_fqdn) }} 0 * * * /home/zend/.acme.sh/acme.sh --cron --home /home/zend/.acme.sh --renew-hook "sudo /home/zend/.acme.sh/renew_hook.sh"'
+    line: '{{ 60 | random(seed=container_fqdn) }} 0 * * * HTTPS_PROXY={{http_proxy}} /home/zend/.acme.sh/acme.sh --cron --home /home/zend/.acme.sh --renew-hook "sudo /home/zend/.acme.sh/renew_hook.sh"'
     # note that the renew-hook seems to be persisted somewhere in acme (and the hook from the -issue command is used despite what we specify here)
 
