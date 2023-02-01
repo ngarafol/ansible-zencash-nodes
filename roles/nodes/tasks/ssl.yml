@@ -57,7 +57,7 @@
     NAMECHEAP_USERNAME: "{{namecheap_username}}"
     NAMECHEAP_SOURCEIP: "{{namecheap_sourceip}}"
     HTTPS_PROXY: "{{http_proxy}}"
-  shell: "HTTPS_PROXY={{http_proxy}} /home/zend/.acme.sh/acme.sh --server letsencrypt --issue --dns dns_namecheap -d {{ container_fqdn }} --renew-hook 'sudo /home/zend/.acme.sh/renew_hook.sh'"
+  shell: "HTTPS_PROXY={{http_proxy}} /home/zend/.acme.sh/acme.sh --server letsencrypt --issue --dns dns_namecheap -d {{ container_fqdn }} -k 2048 --renew-hook 'sudo /home/zend/.acme.sh/renew_hook.sh'"
   ###
   ### zerossl CA (acme default, works but is flaky)
   #shell: "/home/zend/.acme.sh/acme.sh --issue --dns dns_namecheap -d {{ container_fqdn }} --renew-hook 'sudo /home/zend/.acme.sh/renew_hook.sh'"
