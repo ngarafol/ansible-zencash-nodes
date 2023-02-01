@@ -65,12 +65,12 @@
   when: certificate_exists.stat.exists == False
 
 - name: Parse intermediate cert from fullchain
-  shell: cat /home/zend/.acme.sh/{{container_fqdn}}_ecc/fullchain.cer | awk 'split_after==1{n++;split_after=0} /-----END CERTIFICATE-----/ {split_after=1} {print > "/usr/local/share/ca-certificates/le-intermediate-cert" n ".crt"}'
+  shell: cat /home/zend/.acme.sh/{{container_fqdn}}/fullchain.cer | awk 'split_after==1{n++;split_after=0} /-----END CERTIFICATE-----/ {split_after=1} {print > "/usr/local/share/ca-certificates/le-intermediate-cert" n ".crt"}'
   register: intermediate_cert_parsed
 
 - name: Copy ca.crt
   copy:
-    src: /home/zend/.acme.sh/{{container_fqdn}}_ecc/ca.cer
+    src: /home/zend/.acme.sh/{{container_fqdn}}/ca.cer
     dest: /usr/local/share/ca-certificates/acme_ca.cer
     remote_src: yes
   register: ca_cert
