@@ -12,6 +12,14 @@
     group: zend
     recurse: yes
 
+- name: Set proxy for curl
+  template:
+    src: .curlrc
+    dest: "/home/zend/.curlrc"
+    owner: zend
+    group: zend
+  when: http_proxy
+
 - name: Clone acme.sh
   git:
     repo: https://github.com/Neilpang/acme.sh.git
@@ -56,8 +64,7 @@
     NAMECHEAP_API_KEY: "{{namecheap_apikey}}"
     NAMECHEAP_USERNAME: "{{namecheap_username}}"
     NAMECHEAP_SOURCEIP: "{{namecheap_sourceip}}"
-    HTTPS_PROXY: "{{http_proxy}}"
-  shell: "HTTPS_PROXY={{http_proxy}} /home/zend/.acme.sh/acme.sh --server letsencrypt --issue --dns dns_namecheap -d {{ container_fqdn }} -k 2048 --renew-hook 'sudo /home/zend/.acme.sh/renew_hook.sh'"
+  shell: "/home/zend/.acme.sh/acme.sh --server letsencrypt --issue --dns dns_namecheap -d {{ container_fqdn }} -k 2048 --renew-hook 'sudo /home/zend/.acme.sh/renew_hook.sh'"
   ###
   ### zerossl CA (acme default, works but is flaky)
   #shell: "/home/zend/.acme.sh/acme.sh --issue --dns dns_namecheap -d {{ container_fqdn }} --renew-hook 'sudo /home/zend/.acme.sh/renew_hook.sh'"
@@ -95,10 +102,8 @@
     mode: 0750
   
 - name: Add cert renewal to crontab for zend user
-  environment:
-    HTTPS_PROXY: "{{http_proxy}}"
   lineinfile:
     path: /var/spool/cron/crontabs/zend
-    line: '{{ 60 | random(seed=container_fqdn) }} 0 * * * HTTPS_PROXY={{http_proxy}} /home/zend/.acme.sh/acme.sh --cron --home /home/zend/.acme.sh --renew-hook "sudo /home/zend/.acme.sh/renew_hook.sh"'
+    line: '{{ 60 | random(seed=container_fqdn) }} 0 * * * /home/zend/.acme.sh/acme.sh --cron --home /home/zend/.acme.sh --renew-hook "sudo /home/zend/.acme.sh/renew_hook.sh"'
     # note that the renew-hook seems to be persisted somewhere in acme (and the hook from the -issue command is used despite what we specify here)
 
