@@ -12,13 +12,32 @@
     group: zend
     recurse: yes
 
-- name: Set proxy for curl
+- name: Set proxy for curl user zend
   template:
     src: .curlrc
     dest: "/home/zend/.curlrc"
     owner: zend
     group: zend
   when: http_proxy
+
+- name: Force apt ipv4
+  template:
+    src: 99force-ipv4
+    dest: "/etc/apt/apt.conf.d/99force-ipv4"
+    owner: root
+    group: root
+
+- name: Set proxy for curl user root
+  template:
+    src: .curlrc
+    dest: "/root/.curlrc"
+    owner: root
+    group: root
+  when: http_proxy
+
+- name: Git add safe directory
+  command: git config --global --add safe.directory /home/zend/acme.sh
+  check_mode: no
 
 - name: Clone acme.sh
   git:
