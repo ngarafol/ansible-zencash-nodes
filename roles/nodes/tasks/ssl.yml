@@ -27,6 +27,11 @@
     owner: root
     group: root
 
+- name: Install curl package
+  apt:
+    name: curl
+    state: latest
+
 - name: Set proxy for curl user root
   template:
     src: .curlrc
